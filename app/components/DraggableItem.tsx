@@ -6,7 +6,7 @@ interface DraggableItemProps {
 }
 
 export const DraggableItem: React.FC<DraggableItemProps> = ({ id, name }) => (
-  <div className="component" draggable="true" data-id={id}>
+  <div className="" data-draggable draggable="true" data-id={id}>
     {name}
   </div>
 );

@@ -3,36 +3,58 @@ import { draggableItems } from "../config/draggableItems";
 
 export class Editor {
   private canvas: HTMLElement | null = null;
+  private state: ElementStructure[] = [];
 
-  constructor() {
-    console.log("Editor initialized");
-    this.initializeCanvas();
+  constructor(initialState?: ElementStructure[]) {
+    const canvasinitialized = this.initializeCanvas();
+    if (!canvasinitialized) return;
+    if (initialState) {
+      this.state = initialState;
+      this.renderElement(initialState[0], this.canvas as HTMLElement);
+    }
   }
 
-  private initializeCanvas(): void {
+  private initializeCanvas(): boolean {
     this.canvas = document.getElementById("canvas");
+    if (!this.canvas || this.canvas.tagName !== "IFRAME") {
+      console.error("canvas not found or not an iframe");
+      this.canvas = null;
+      return false;
+    }
+    const iframe = this.canvas as HTMLIFrameElement;
+    this.canvas = iframe.contentDocument?.body || null;
     this.setupEventListeners();
+    return true;
+  }
+  public setState(newState: ElementStructure[]): void {
+    this.state = newState;
+    this.clearCanvas();
+    for (const element of this.state) {
+      this.renderElement(element, this.canvas as HTMLElement);
+    }
+  }
+  public clearCanvas() {
+    if (this.canvas) {
+      this.canvas.innerHTML = "";
+    }
   }
 
   private setupEventListeners(): void {
     if (!this.canvas) return;
 
-    document.querySelectorAll(".component").forEach((comp) => {
+    document.querySelectorAll("[data-draggable]").forEach((comp) => {
       comp.addEventListener("dragstart", ((e: Event) => {
-        console.log("dragstart");
         const dragEvent = e as DragEvent;
         this.handleDragStart(dragEvent);
       }) as EventListener);
     });
 
     this.canvas.addEventListener("dragover", ((e: Event) => {
-      console.log("dragover");
       const dragEvent = e as DragEvent;
       this.handleDragOver(dragEvent);
     }) as EventListener);
 
     this.canvas.addEventListener("drop", ((e: Event) => {
-      console.log("drop");
       const dragEvent = e as DragEvent;
       this.handleDrop(dragEvent);
     }) as EventListener);
@@ -64,7 +86,8 @@ export class Editor {
 
     const component = this.findDraggableItem(componentId);
     if (component) {
-      this.renderElement(component.structure, parentElement);
+      const newElement = this.renderElement(component.structure, parentElement);
+      this.state.push(this.htmlToJSObject(newElement));
     }
   }
 
@@ -105,8 +128,9 @@ export class Editor {
     if (data.type !== "div") {
       this.setupDragging(el, data);
     }
-
-    // this.setupResizing(el, data);
+    if (data.type === "img") {
+      this.setupResizing(el, data);
+    }
 
     if (data.type === "div" && data.attributes?.class?.includes("col")) {
       this.setupColumnBehavior(el);
@@ -239,5 +263,74 @@ export class Editor {
         return event.clientY < rect.top + rect.height / 2;
       }) || null
     );
+  }
+  public parseHTMLFromString(htmlString: string): HTMLElement {
+    const tempContainer = document.createElement("div");
+    tempContainer.innerHTML = htmlString.trim();
+
+    return tempContainer;
+  }
+  public htmlToJSObject(element: HTMLElement | string): ElementStructure {
+    if (typeof element === "string") {
+      const doc = this.parseHTMLFromString(element);
+      element = doc;
+    }
+    const obj: ElementStructure = {
+      id: element.id,
+      type: element.tagName.toLowerCase(),
+      attributes: {},
+      children: [],
+    };
+
+    for (const attr of Array.from(element.attributes)) {
+      obj.attributes[attr.name] = attr.value;
+    }
+    // Handle text content
+    if (
+      element.childNodes.length === 1 &&
+      element.childNodes[0].nodeType === Node.TEXT_NODE
+    ) {
+      obj.content = element.textContent?.trim();
+    }
+
+    // Recursively process child elements
+    for (const child of Array.from(element.children)) {
+      obj?.children?.push(this.htmlToJSObject(child as HTMLElement));
+    }
+
+    return obj;
+  }
+  public jsObjectToHtml(obj: ElementStructure): HTMLElement {
+    const element = document.createElement(obj.type);
+
+    // Set the ID if available
+    if (obj.id) {
+      element.id = obj.id;
+    }
+
+    // Set attributes (e.g., class, style, etc.)
+    for (const [key, value] of Object.entries(obj.attributes)) {
+      element.setAttribute(key, value || "");
+    }
+
+    // Add text content if present
+    if (obj.content) {
+      element.textContent = obj.content;
+    }
+
+    // Recursively create and append children
+    for (const child of obj.children || []) {
+      element.appendChild(this.jsObjectToHtml(child));
+    }
+
+    return element;
+  }
+  public getJsObject(): ElementStructure[] {
+    return this.state;
+  }
+
+  // Get the current state as an HTML string
+  public getHtml(): string {
+    return this.canvas?.innerHTML || "";
   }
 }
