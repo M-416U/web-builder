@@ -41,3 +41,14 @@ export interface StyleRule {
   properties: { [key: string]: string };
   mediaQuery?: string;
 }
+
+export interface StyleCategory {
+  name: string;
+  properties: {
+    name: string;
+    label: string;
+    type: 'text' | 'number' | 'color' | 'select';
+    options?: string[];
+    unit?: string;
+  }[];
+}

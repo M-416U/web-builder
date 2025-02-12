@@ -1,4 +1,5 @@
 import { DraggableItem, ElementStructure } from "@/types";
+
 export class DragDropHandler {
   constructor(
     private canvas: HTMLElement,
@@ -7,13 +8,15 @@ export class DragDropHandler {
       data: ElementStructure,
       parent: HTMLElement,
       id: string
-    ) => HTMLElement
+    ) => HTMLElement,
+    private onElementSelect?: (element: HTMLElement) => void
   ) {}
 
   setupEventListeners(): void {
     document.querySelectorAll("[data-draggable]").forEach((comp) => {
       comp.addEventListener("dragstart", ((e: Event) => {
         const dragEvent = e as DragEvent;
+        console.log("dragstart", comp);
         this.handleDragStart(dragEvent);
       }) as EventListener);
     });
@@ -26,6 +29,14 @@ export class DragDropHandler {
     this.canvas.addEventListener("drop", ((e: Event) => {
       const dragEvent = e as DragEvent;
       this.handleDrop(dragEvent);
+    }) as EventListener);
+
+    // Add click event listener for element selection
+    this.canvas.addEventListener("click", ((e: Event) => {
+      const target = e.target as HTMLElement;
+      if (target.hasAttribute("data-id")) {
+        this.handleElementSelect(target);
+      }
     }) as EventListener);
   }
 
@@ -68,23 +79,32 @@ export class DragDropHandler {
       console.warn("No valid drop target found");
       return;
     }
+
     const component = this.findDraggableItem(componentId);
     if (!component) {
-      console.warn("Component not found:", componentId);
-      return;
-    }
+      const existingElement = this.canvas.querySelector(
+        `[data-id="${componentId}"]`
+      );
 
-    const position = this.getDropPosition(event, dropTarget);
-    const newElement = this.renderElement(
-      component.structure,
-      dropTarget,
-      component.id
-    );
+      console.log("element exist", existingElement);
+      if (existingElement) {
+        dropTarget.appendChild(existingElement);
+      }
+    } else if (component) {
+      const position = this.getDropPosition(event, dropTarget);
+      const newElement = this.renderElement(
+        component.structure,
+        dropTarget,
+        component.id
+      );
 
-    if (position) {
-      dropTarget.insertBefore(newElement, position);
+      if (position) {
+        dropTarget.insertBefore(newElement, position);
+      } else {
+        dropTarget.appendChild(newElement);
+      }
     } else {
-      dropTarget.appendChild(newElement);
+      console.warn("Component not found:", componentId);
     }
   }
 
@@ -133,5 +153,55 @@ export class DragDropHandler {
         return event.clientY < childRect.top + childRect.height / 2;
       }) || null
     );
+  }
+
+  private handleElementSelect(element: HTMLElement): void {
+    // Remove previous selection
+    this.canvas.querySelectorAll(".selected-element").forEach((el) => {
+      el.classList.remove("selected-element");
+      this.removeTooltip(el as HTMLElement);
+    });
+
+    // Add selection to clicked element
+    element.classList.add("selected-element");
+    this.addTooltip(element);
+
+    // Only call onElementSelect if it exists
+    if (this.onElementSelect) {
+      this.onElementSelect(element);
+    }
+  }
+
+  private addTooltip(element: HTMLElement): void {
+    const tooltip = document.createElement("div");
+    tooltip.className = "element-tooltip";
+    tooltip.innerHTML = `
+      <button class="delete-btn" title="Delete element">🗑️</button>
+    `;
+
+    // Position the tooltip
+    const rect = element.getBoundingClientRect();
+    tooltip.style.position = "absolute";
+    tooltip.style.top = `${rect.top - 30}px`;
+    tooltip.style.left = `${rect.right - 30}px`;
+
+    // Add delete functionality
+    const deleteBtn = tooltip.querySelector(".delete-btn");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        element.remove();
+        tooltip.remove();
+      });
+    }
+
+    document.body.appendChild(tooltip);
+  }
+
+  private removeTooltip(element: HTMLElement): void {
+    const tooltip = document.querySelector(".element-tooltip");
+    if (tooltip) {
+      tooltip.remove();
+    }
   }
 }

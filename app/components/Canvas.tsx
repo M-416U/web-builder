@@ -13,14 +13,42 @@ export const Canvas: React.FC<CanvasProps> = ({ onDragOver, onDrop }) => {
     if (iframe && iframe.contentDocument) {
       const style = document.createElement("style");
       style.innerHTML = `
+        body {
+          margin: 0;
+          min-height: 100vh;
+          background: #fff;
+          font-family: system-ui, -apple-system, sans-serif;
+        }
+        
         .drop-target {
           border: 2px dashed #4a90e2 !important;
-          background-color: rgba(122, 129, 138, 0.1);
+          background-color: rgba(74, 144, 226, 0.1) !important;
         }
+        
         .drop-container {
-          min-height: 50px;
-          padding: 10px;
-          border: 1px solid #e0e0e0;
+          min-height: 100vh;
+          padding: 20px;
+          background: #fff;
+        }
+        
+        .selected-element {
+          outline: 2px solid #4a90e2 !important;
+          outline-offset: 2px !important;
+          position: relative;
+        }
+        
+        .selected-element::after {
+          content: attr(data-id);
+          position: absolute;
+          top: -20px;
+          left: 0;
+          background: #4a90e2;
+          color: white;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-size: 10px;
+          pointer-events: none;
+          z-index: 1000;
         }
       `;
       iframe.contentDocument.head.appendChild(style);
@@ -30,7 +58,8 @@ export const Canvas: React.FC<CanvasProps> = ({ onDragOver, onDrop }) => {
   return (
     <iframe
       ref={iframeRef}
-      className="w-full m-3 min-h-[500px] bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg"
+      className="w-full bg-white border rounded-lg shadow-sm"
+      style={{ height: 'calc(100vh - 2rem)' }}
       id="canvas"
       onDragOver={onDragOver}
       onDrop={onDrop}

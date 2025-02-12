@@ -12,8 +12,7 @@ export const draggableItems = [
           type: "div",
           attributes: {
             class: "col",
-            style:
-              "flex:1; padding:10px; border:1px solid black; min-height:50px;",
+            style: "flex:1; padding:10px; min-height:50px;",
           },
           children: [],
         },
@@ -33,8 +32,7 @@ export const draggableItems = [
           type: "div",
           attributes: {
             class: "col",
-            style:
-              "flex:1; padding:10px; border:1px solid black; min-height:50px;",
+            style: "flex:1; padding:10px; min-height:50px;",
           },
           children: [],
         },
@@ -43,8 +41,7 @@ export const draggableItems = [
           type: "div",
           attributes: {
             class: "col",
-            style:
-              "flex:1; padding:10px; border:1px solid black; min-height:50px;",
+            style: "flex:1; padding:10px; min-height:50px;",
           },
           children: [],
         },
@@ -58,7 +55,7 @@ export const draggableItems = [
       id: "el-text",
       type: "p",
       attributes: {
-        style: "padding: 5px; margin: 5px; border: 1px dashed gray;",
+        // style: "padding: 5px; margin: 5px; border: 1px dashed gray;",
       },
       content: "New Text",
       children: [],
@@ -71,8 +68,8 @@ export const draggableItems = [
       id: "el-button",
       type: "button",
       attributes: {
-        style:
-          "padding: 5px; margin: 5px; border: 1px dashed gray; cursor:pointer;",
+        // style:
+        //   "padding: 5px; margin: 5px; border: 1px dashed gray; cursor:pointer;",
       },
       content: "Click Me",
       children: [],
@@ -86,8 +83,7 @@ export const draggableItems = [
       type: "img",
       attributes: {
         src: "https://placehold.co/100",
-        style:
-          "padding: 5px; margin: 5px; border: 1px dashed gray; width:100px; height:auto;",
+        style: "width:auto; height:auto;",
       },
       children: [],
     },
