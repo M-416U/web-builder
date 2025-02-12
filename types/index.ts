@@ -23,3 +23,21 @@ export interface ElementSize {
   width: number;
   height: number;
 }
+
+export interface DraggableItem {
+  id: string;
+  structure: ElementStructure;
+}
+export interface DeviceConfig {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  type: "mobile" | "tablet" | "desktop";
+}
+
+export interface StyleRule {
+  selector: string;
+  properties: { [key: string]: string };
+  mediaQuery?: string;
+}

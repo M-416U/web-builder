@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from "react";
 import { draggableItems } from "../config/draggableItems";
 import { DraggableItem } from "../components/DraggableItem";
 import { Canvas } from "../components/Canvas";
-import { Editor } from "../lib/Editor";
 import { landingPage, loginPage } from "../config/intial";
+import { Editor } from "./Editor";
 
 export default function Home() {
   const editorRef = useRef<Editor>();
@@ -12,20 +12,20 @@ export default function Home() {
 
   useEffect(() => {
     if (!hasInitialized.current) {
-      editorRef.current = new Editor([landingPage]);
+      editorRef.current = new Editor();
       hasInitialized.current = true;
     }
   }, []);
-  useEffect(() => {
-    setTimeout(() => {
-      const obj = editorRef.current?.htmlToJSObject(loginPage);
-      if (obj) {
-        editorRef.current?.setState([obj]);
-      } else {
-        console.error("Failed to parse HTML to JSON");
-      }
-    }, 2 * 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     const obj = editorRef.current?.htmlToJSObject(loginPage);
+  //     if (obj) {
+  //       editorRef.current?.setState([obj]);
+  //     } else {
+  //       console.error("Failed to parse HTML to JSON");
+  //     }
+  //   }, 2 * 1000);
+  // }, []);
   const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault();
   };
