@@ -93,6 +93,13 @@ export default function Home() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
+        <StyleManagerUI styleManager={editorRef?.current?.styleManager} />
+
+
+        {/* Main Content - Canvas */}
+        <div className="flex-1 bg-gray-100 overflow-auto">
+          <Canvas onDragOver={handleDragOver} onDrop={handleDrop} />
+        </div>
         {/* Left Sidebar - Basic Elements & Components */}
         <div className="w-64 border-r bg-white overflow-y-auto">
           <div className="p-4">
@@ -107,14 +114,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Main Content - Canvas */}
-        <div className="flex-1 bg-gray-100 overflow-auto">
-          <Canvas onDragOver={handleDragOver} onDrop={handleDrop} />
-        </div>
-
-        {/* {editorRef.current && ( */}
-        <StyleManagerUI styleManager={editorRef?.current?.styleManager} />
-        {/* )} */}
       </div>
     </main>
   );
