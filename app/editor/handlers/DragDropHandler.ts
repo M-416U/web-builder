@@ -16,7 +16,6 @@ export class DragDropHandler {
     document.querySelectorAll("[data-draggable]").forEach((comp) => {
       comp.addEventListener("dragstart", ((e: Event) => {
         const dragEvent = e as DragEvent;
-        console.log("dragstart", comp);
         this.handleDragStart(dragEvent);
       }) as EventListener);
     });
@@ -82,11 +81,8 @@ export class DragDropHandler {
 
     const component = this.findDraggableItem(componentId);
     if (!component) {
-      const existingElement = this.canvas.querySelector(
-        `[data-id="${componentId}"]`
-      );
+      const existingElement = this.canvas.querySelector(`#${componentId}`);
 
-      console.log("element exist", existingElement);
       if (existingElement) {
         dropTarget.appendChild(existingElement);
       }
@@ -159,49 +155,14 @@ export class DragDropHandler {
     // Remove previous selection
     this.canvas.querySelectorAll(".selected-element").forEach((el) => {
       el.classList.remove("selected-element");
-      this.removeTooltip(el as HTMLElement);
     });
 
     // Add selection to clicked element
     element.classList.add("selected-element");
-    this.addTooltip(element);
 
     // Only call onElementSelect if it exists
     if (this.onElementSelect) {
       this.onElementSelect(element);
-    }
-  }
-
-  private addTooltip(element: HTMLElement): void {
-    const tooltip = document.createElement("div");
-    tooltip.className = "element-tooltip";
-    tooltip.innerHTML = `
-      <button class="delete-btn" title="Delete element">🗑️</button>
-    `;
-
-    // Position the tooltip
-    const rect = element.getBoundingClientRect();
-    tooltip.style.position = "absolute";
-    tooltip.style.top = `${rect.top - 30}px`;
-    tooltip.style.left = `${rect.right - 30}px`;
-
-    // Add delete functionality
-    const deleteBtn = tooltip.querySelector(".delete-btn");
-    if (deleteBtn) {
-      deleteBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        element.remove();
-        tooltip.remove();
-      });
-    }
-
-    document.body.appendChild(tooltip);
-  }
-
-  private removeTooltip(element: HTMLElement): void {
-    const tooltip = document.querySelector(".element-tooltip");
-    if (tooltip) {
-      tooltip.remove();
     }
   }
 }

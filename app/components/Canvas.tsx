@@ -59,7 +59,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onDragOver, onDrop }) => {
     <iframe
       ref={iframeRef}
       className="w-full bg-white border rounded-lg shadow-sm"
-      style={{ height: 'calc(100vh - 2rem)' }}
+      style={{ height: "calc(100vh - 2rem)" }}
       id="canvas"
       onDragOver={onDragOver}
       onDrop={onDrop}

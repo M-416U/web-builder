@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { StyleManager } from "../editor/services/StyleManager";
 import { STYLE_CATEGORIES } from "../config/stylesCategories";
 
-export function useStyles(styleManager: StyleManager) {
+export function useStyles(styleManager: StyleManager | undefined) {
   const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(
     null
   );
@@ -17,28 +17,30 @@ export function useStyles(styleManager: StyleManager) {
     const elementId = selectedElement.getAttribute("data-id");
     if (!elementId) return;
 
-    const elementStyles = styleManager.getElementStyles(elementId);
-    const computedStyles = elementStyles.reduce((acc, rule) => {
+    const elementStyles = styleManager?.getElementStyles(elementId);
+    const computedStyles = elementStyles?.reduce((acc, rule) => {
       if (!rule.mediaQuery) {
         return { ...acc, ...rule.properties };
       }
       return acc;
     }, {});
 
-    setStyles(computedStyles);
+    setStyles(computedStyles || {});
   }, [selectedElement, styleManager]);
 
   useEffect(() => {
-    const element = styleManager.getSelectedElement();
+    const element = styleManager?.getSelectedElement();
     if (element) {
       setSelectedElement(element);
     }
 
-    const unsubscribe = styleManager.onSelectedElementChange((element) => {
+    const unsubscribe = styleManager?.onSelectedElementChange((element) => {
       setSelectedElement(element);
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [styleManager]);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function useStyles(styleManager: StyleManager) {
         }
       }
 
-      styleManager.applyStyleToSelected({
+      styleManager?.applyStyleToSelected({
         selector: "",
         properties: { [property]: finalValue },
       });
@@ -73,7 +75,7 @@ export function useStyles(styleManager: StyleManager) {
   const handleRemoveStyle = useCallback(
     (property: string) => {
       if (!selectedElement) return;
-      styleManager.removeStyle(property);
+      styleManager?.removeStyle(property);
       updateStyles();
     },
     [selectedElement, styleManager, updateStyles]

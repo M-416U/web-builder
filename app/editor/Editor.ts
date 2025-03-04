@@ -135,6 +135,7 @@ export class Editor {
   private setupElementBehavior(el: HTMLElement, data: ElementStructure): void {
     const elementId = this.generateElementId();
     el.setAttribute("data-id", elementId);
+    el.id = elementId; // Add a unique ID to the element for CSS targeting
 
     const handleClick = (e: Event) => {
       e.stopPropagation();
@@ -251,6 +252,9 @@ export class Editor {
       element.removeAttribute("draggable");
       element.removeAttribute("data-draggable");
       element.removeAttribute("data-id");
+      element.removeAttribute("contenteditable");
+
+      // Keep data-id for reference but remove other editor attributes
 
       // Remove editor-specific classes
       if (element.classList.contains("drop-target")) {
@@ -268,27 +272,16 @@ export class Editor {
 
     cleanupElement(tempContainer);
 
-    // Get computed styles and add them inline
-    const addComputedStyles = (element: HTMLElement) => {
-      const elementId = element.getAttribute("data-id");
-      if (elementId) {
-        const styles = this.styleManager.getElementStyles(elementId);
-        styles.forEach((rule) => {
-          Object.entries(rule.properties).forEach(([property, value]) => {
-            element.style[property as any] = value;
-          });
-        });
-      }
-
-      // Process children recursively
-      Array.from(element.children).forEach((child) => {
-        addComputedStyles(child as HTMLElement);
-      });
-    };
-
-    addComputedStyles(tempContainer);
-
+    // Don't add inline styles - we'll export them separately
     return tempContainer.innerHTML;
+  }
+
+  // Add a new method to export CSS
+  public getCss(): string {
+    // Get all style rules from the style manager
+    const cssContent = this.styleManager.getAllStyles();
+
+    return cssContent || "";
   }
   public htmlToJSObject(el: HTMLElement | string): ElementStructure {
     return HTMLService.htmlToJSObject(el);

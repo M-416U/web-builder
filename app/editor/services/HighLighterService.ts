@@ -86,8 +86,21 @@ export class HighLighterService {
 
   private updateOverlay(element: HTMLElement | null) {
     this.clearOverlays();
-    if (!element) return;
 
+    if (this.selectedElement) {
+      this.renderElementOverlay(this.selectedElement, true);
+    }
+
+    if (
+      element &&
+      element !== this.selectedElement &&
+      element === this.hoveredElement
+    ) {
+      this.renderElementOverlay(element, false);
+    }
+  }
+
+  private renderElementOverlay(element: HTMLElement, isSelected: boolean) {
     const iframe = document.getElementById("canvas") as HTMLIFrameElement;
     if (!iframe?.contentDocument) return;
 
@@ -103,23 +116,19 @@ export class HighLighterService {
       rect.height
     );
 
-    this.overlayRect = adjustedRect;
-    this.renderOverlay();
+    this.renderOverlay(adjustedRect, isSelected);
   }
 
-  private renderOverlay() {
-    if (!this.overlayRect) return;
-
-    const isSelected = this.selectedElement !== null;
+  private renderOverlay(rect: DOMRect, isSelected: boolean = false) {
     const overlay = document.createElement("div");
     overlay.className = `pointer-events-none absolute transition-all duration-100 ${
       isSelected
         ? "border-2 border-blue-500"
         : "outline-dotted outline-offset-2 outline-[0.8px] outline-gray-700 outline-opacity-50"
     }`;
-    overlay.style.transform = `translate3d(${this.overlayRect.left}px, ${this.overlayRect.top}px, 0)`;
-    overlay.style.width = `${this.overlayRect.width}px`;
-    overlay.style.height = `${this.overlayRect.height}px`;
+    overlay.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
+    overlay.style.width = `${rect.width}px`;
+    overlay.style.height = `${rect.height}px`;
     overlay.style.zIndex = isSelected ? "50" : "40";
 
     if (isSelected) {
@@ -149,19 +158,16 @@ export class HighLighterService {
     this.container.appendChild(overlay);
     this.overlays.push(overlay);
   }
-
   private clearOverlays() {
     this.overlays.forEach((overlay) => {
       this.container.removeChild(overlay);
     });
     this.overlays = [];
   }
-
   public selectElement(element: HTMLElement | null) {
     this.selectedElement = element;
     this.updateOverlay(element);
   }
-
   public destroy() {
     this.clearOverlays();
     this.selectedElement = null;

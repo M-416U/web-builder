@@ -44,11 +44,37 @@ export interface StyleRule {
 
 export interface StyleCategory {
   name: string;
-  properties: {
-    name: string;
-    label: string;
-    type: 'text' | 'number' | 'color' | 'select';
-    options?: string[];
-    unit?: string;
-  }[];
+  icon: string;
+  properties: StyleProperty[];
+}
+
+export interface StyleProperty {
+  name: string;
+  label: string;
+  type:
+    | "text"
+    | "number"
+    | "color"
+    | "select"
+    | "dimension"
+    | "spacing"
+    | "border"
+    | "shadow"
+    | "range"
+    | "checkbox";
+  options?: string[];
+  unit?: string;
+  placeholder?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  subProperties?: SubProperty[];
+}
+
+export interface SubProperty {
+  name: string;
+  label: string;
+  type?: "text" | "number" | "color" | "select" | "dimension" | "checkbox";
+  options?: string[];
+  unit?: string;
 }

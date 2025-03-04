@@ -2,37 +2,379 @@ import { StyleCategory } from "@/types";
 
 export const STYLE_CATEGORIES: StyleCategory[] = [
   {
-    name: 'Dimensions',
+    name: "Layout",
+    icon: "grid_view",
     properties: [
-      { name: 'width', label: 'Width', type: 'number', unit: 'px' },
-      { name: 'height', label: 'Height', type: 'number', unit: 'px' },
-      { name: 'margin', label: 'Margin', type: 'number', unit: 'px' },
-      { name: 'padding', label: 'Padding', type: 'number', unit: 'px' }
-    ]
+      {
+        name: "display",
+        label: "Display",
+        type: "select",
+        options: ["block", "inline", "inline-block", "flex", "grid", "none"],
+      },
+      {
+        name: "position",
+        label: "Position",
+        type: "select",
+        options: ["static", "relative", "absolute", "fixed", "sticky"],
+      },
+      {
+        name: "float",
+        label: "Float",
+        type: "select",
+        options: ["none", "left", "right"],
+      },
+      {
+        name: "visibility",
+        label: "Visibility",
+        type: "select",
+        options: ["visible", "hidden"],
+      },
+    ],
   },
   {
-    name: 'Typography',
+    name: "Dimensions",
+    icon: "aspect_ratio",
     properties: [
-      { name: 'font-size', label: 'Font Size', type: 'number', unit: 'px' },
-      { name: 'font-weight', label: 'Font Weight', type: 'select', options: ['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
-      { name: 'color', label: 'Text Color', type: 'color' },
-      { name: 'text-align', label: 'Text Align', type: 'select', options: ['left', 'center', 'right', 'justify'] }
-    ]
+      { name: "width", label: "Width", type: "dimension", unit: "px" },
+      { name: "height", label: "Height", type: "dimension", unit: "px" },
+      { name: "min-width", label: "Min Width", type: "dimension", unit: "px" },
+      { name: "max-width", label: "Max Width", type: "dimension", unit: "px" },
+      {
+        name: "min-height",
+        label: "Min Height",
+        type: "dimension",
+        unit: "px",
+      },
+      {
+        name: "max-height",
+        label: "Max Height",
+        type: "dimension",
+        unit: "px",
+      },
+    ],
   },
   {
-    name: 'Background',
+    name: "Spacing",
+    icon: "space_dashboard",
     properties: [
-      { name: 'background-color', label: 'Background Color', type: 'color' },
-      { name: 'opacity', label: 'Opacity', type: 'number' }
-    ]
+      {
+        name: "margin",
+        label: "Margin",
+        type: "spacing",
+        subProperties: [
+          { name: "margin-top", label: "Top" },
+          { name: "margin-right", label: "Right" },
+          { name: "margin-bottom", label: "Bottom" },
+          { name: "margin-left", label: "Left" },
+        ],
+      },
+      {
+        name: "padding",
+        label: "Padding",
+        type: "spacing",
+        subProperties: [
+          { name: "padding-top", label: "Top" },
+          { name: "padding-right", label: "Right" },
+          { name: "padding-bottom", label: "Bottom" },
+          { name: "padding-left", label: "Left" },
+        ],
+      },
+    ],
   },
   {
-    name: 'Border',
+    name: "Typography",
+    icon: "text_fields",
     properties: [
-      { name: 'border-width', label: 'Border Width', type: 'number', unit: 'px' },
-      { name: 'border-style', label: 'Border Style', type: 'select', options: ['none', 'solid', 'dashed', 'dotted'] },
-      { name: 'border-color', label: 'Border Color', type: 'color' },
-      { name: 'border-radius', label: 'Border Radius', type: 'number', unit: 'px' }
-    ]
-  }
+      {
+        name: "font-family",
+        label: "Font Family",
+        type: "select",
+        options: [
+          "Arial, sans-serif",
+          "Helvetica, sans-serif",
+          "Times New Roman, serif",
+          "Georgia, serif",
+          "Courier New, monospace",
+          "Verdana, sans-serif",
+          "system-ui, sans-serif",
+        ],
+      },
+      { name: "font-size", label: "Font Size", type: "dimension", unit: "px" },
+      {
+        name: "font-weight",
+        label: "Font Weight",
+        type: "select",
+        options: [
+          "normal",
+          "bold",
+          "100",
+          "200",
+          "300",
+          "400",
+          "500",
+          "600",
+          "700",
+          "800",
+          "900",
+        ],
+      },
+      {
+        name: "font-style",
+        label: "Font Style",
+        type: "select",
+        options: ["normal", "italic", "oblique"],
+      },
+      {
+        name: "line-height",
+        label: "Line Height",
+        type: "dimension",
+        unit: "",
+      },
+      {
+        name: "letter-spacing",
+        label: "Letter Spacing",
+        type: "dimension",
+        unit: "px",
+      },
+      {
+        name: "text-align",
+        label: "Text Align",
+        type: "select",
+        options: ["left", "center", "right", "justify"],
+      },
+      {
+        name: "text-decoration",
+        label: "Text Decoration",
+        type: "select",
+        options: ["none", "underline", "overline", "line-through"],
+      },
+      {
+        name: "text-transform",
+        label: "Text Transform",
+        type: "select",
+        options: ["none", "capitalize", "uppercase", "lowercase"],
+      },
+      { name: "color", label: "Text Color", type: "color" },
+    ],
+  },
+  {
+    name: "Background",
+    icon: "format_color_fill",
+    properties: [
+      { name: "background-color", label: "Background Color", type: "color" },
+      {
+        name: "background-image",
+        label: "Background Image",
+        type: "text",
+        placeholder: "url(...)",
+      },
+      {
+        name: "background-size",
+        label: "Background Size",
+        type: "select",
+        options: ["auto", "cover", "contain"],
+      },
+      {
+        name: "background-position",
+        label: "Background Position",
+        type: "select",
+        options: [
+          "center",
+          "top",
+          "right",
+          "bottom",
+          "left",
+          "top left",
+          "top right",
+          "bottom left",
+          "bottom right",
+        ],
+      },
+      {
+        name: "background-repeat",
+        label: "Background Repeat",
+        type: "select",
+        options: ["repeat", "no-repeat", "repeat-x", "repeat-y"],
+      },
+      {
+        name: "opacity",
+        label: "Opacity",
+        type: "range",
+        min: 0,
+        max: 1,
+        step: 0.01,
+      },
+    ],
+  },
+  {
+    name: "Border",
+    icon: "border_style",
+    properties: [
+      {
+        name: "border",
+        label: "Border",
+        type: "border",
+        subProperties: [
+          {
+            name: "border-width",
+            label: "Width",
+            type: "dimension",
+            unit: "px",
+          },
+          {
+            name: "border-style",
+            label: "Style",
+            type: "select",
+            options: ["none", "solid", "dashed", "dotted", "double"],
+          },
+          { name: "border-color", label: "Color", type: "color" },
+        ],
+      },
+      {
+        name: "border-radius",
+        label: "Border Radius",
+        type: "spacing",
+        subProperties: [
+          { name: "border-top-left-radius", label: "Top Left" },
+          { name: "border-top-right-radius", label: "Top Right" },
+          { name: "border-bottom-right-radius", label: "Bottom Right" },
+          { name: "border-bottom-left-radius", label: "Bottom Left" },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Effects",
+    icon: "blur_on",
+    properties: [
+      {
+        name: "box-shadow",
+        label: "Box Shadow",
+        type: "shadow",
+        subProperties: [
+          {
+            name: "h-offset",
+            label: "H-Offset",
+            type: "dimension",
+            unit: "px",
+          },
+          {
+            name: "v-offset",
+            label: "V-Offset",
+            type: "dimension",
+            unit: "px",
+          },
+          { name: "blur", label: "Blur", type: "dimension", unit: "px" },
+          { name: "spread", label: "Spread", type: "dimension", unit: "px" },
+          { name: "color", label: "Color", type: "color" },
+          { name: "inset", label: "Inset", type: "checkbox" },
+        ],
+      },
+      {
+        name: "filter",
+        label: "Filter",
+        type: "select",
+        options: [
+          "none",
+          "blur(5px)",
+          "brightness(1.2)",
+          "contrast(1.2)",
+          "grayscale(100%)",
+          "sepia(100%)",
+          "invert(100%)",
+        ],
+      },
+    ],
+  },
+  {
+    name: "Flexbox",
+    icon: "view_column",
+    properties: [
+      {
+        name: "flex-direction",
+        label: "Direction",
+        type: "select",
+        options: ["row", "row-reverse", "column", "column-reverse"],
+      },
+      {
+        name: "flex-wrap",
+        label: "Wrap",
+        type: "select",
+        options: ["nowrap", "wrap", "wrap-reverse"],
+      },
+      {
+        name: "justify-content",
+        label: "Justify Content",
+        type: "select",
+        options: [
+          "flex-start",
+          "flex-end",
+          "center",
+          "space-between",
+          "space-around",
+          "space-evenly",
+        ],
+      },
+      {
+        name: "align-items",
+        label: "Align Items",
+        type: "select",
+        options: ["stretch", "flex-start", "flex-end", "center", "baseline"],
+      },
+      {
+        name: "align-content",
+        label: "Align Content",
+        type: "select",
+        options: [
+          "stretch",
+          "flex-start",
+          "flex-end",
+          "center",
+          "space-between",
+          "space-around",
+        ],
+      },
+      { name: "gap", label: "Gap", type: "dimension", unit: "px" },
+    ],
+  },
+  {
+    name: "Transforms",
+    icon: "3d_rotation",
+    properties: [
+      {
+        name: "transform-scale-x",
+        label: "Scale X",
+        type: "range",
+        min: 0,
+        max: 2,
+        step: 0.1,
+      },
+      {
+        name: "transform-scale-y",
+        label: "Scale Y",
+        type: "range",
+        min: 0,
+        max: 2,
+        step: 0.1,
+      },
+      {
+        name: "transform-rotate",
+        label: "Rotate",
+        type: "dimension",
+        unit: "deg",
+      },
+      {
+        name: "transform-translate-x",
+        label: "Translate X",
+        type: "dimension",
+        unit: "px",
+      },
+      {
+        name: "transform-translate-y",
+        label: "Translate Y",
+        type: "dimension",
+        unit: "px",
+      },
+    ],
+  },
 ];
